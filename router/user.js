@@ -1,6 +1,7 @@
 const express = require('express')
 const userModel = require('../model/user')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 const router = express.Router()
 
 // 회원정보
@@ -106,10 +107,20 @@ router.post('/login', (req, res) => {
                         })
                     }
                     else{
+                        const token = jwt.sign(
+                            {id : user._id, email: user.email},
+                            process.env.SECRET_KEY,
+                            { expiresIn: "1h"}
+                        )
+
                         res.json({
                             msg : "successful login",
-                            userInfo : user
+                            tokenInfo : token
                         })
+                        // res.json({
+                        //     msg : "successful login",
+                        //     userInfo : user
+                        // })
                     }
                 })
             }
