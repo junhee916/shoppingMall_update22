@@ -31,7 +31,7 @@ router.get('/', (req, res) => {
 
 // 회원가입
 router.post('/signup', (req, res) => {
-
+    // password 암호화 => 이메일 유무 check => user model 생성 => save
     bcrypt.hash(req.body.password, 10, (err, hash) => {
         if(err){
             return res.status(500).json({
@@ -89,7 +89,36 @@ router.post('/signup', (req, res) => {
 
 // 로그인
 router.post('/login', (req, res) => {
-
+    // email 유무 check => password 매칭 => 로그인 성공시 token 반환
+    userModel
+        .findOne({email : req.body.userEmail})
+        .then(user => {
+            if(!user){
+                return res.status(404).json({
+                    msg : "user email, please other email"
+                })
+            }
+            else{
+                bcrypt.compare(req.body.password, user.password, (err, isMatch) => {
+                    if(err || isMatch === false){
+                        return res.status(408).json({
+                            msg : "password not match"
+                        })
+                    }
+                    else{
+                        res.json({
+                            msg : "successful login",
+                            userInfo : user
+                        })
+                    }
+                })
+            }
+        })
+        .catch(err => {
+            res.status(500).json({
+                msg : err.message
+            })
+        })
 })
 
 module.exports = router
