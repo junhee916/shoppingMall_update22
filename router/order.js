@@ -1,9 +1,10 @@
 const express = require('express')
 const orderModel = require('../model/order')
 const router = express.Router()
+const checkAuth = require('../middleware/check-auth')
 
 // total get order
-router.get('/', (req, res) => {
+router.get('/', checkAuth, (req, res) => {
 
     orderModel
         .find()
@@ -30,7 +31,7 @@ router.get('/', (req, res) => {
 })
 
 // detail get order
-router.get('/:orderId', (req, res) => {
+router.get('/:orderId', checkAuth, (req, res) => {
 
     const id = req.params.orderId
 
@@ -61,7 +62,7 @@ router.get('/:orderId', (req, res) => {
 })
 
 // register order
-router.post('/', (req, res) => {
+router.post('/', checkAuth, (req, res) => {
 
     const newOrder = new orderModel(
         {
@@ -91,7 +92,7 @@ router.post('/', (req, res) => {
 })
 
 // update order
-router.patch('/:orderId', (req, res) => {
+router.patch('/:orderId', checkAuth, (req, res) => {
 
     const id = req.params.orderId
 
@@ -121,7 +122,7 @@ router.patch('/:orderId', (req, res) => {
 })
 
 // total delete order
-router.delete('/', (req, res) => {
+router.delete('/', checkAuth, (req, res) => {
 
     orderModel
         .remove()
@@ -138,7 +139,7 @@ router.delete('/', (req, res) => {
 })
 
 // detail delete order
-router.delete('/:orderId', (req, res) => {
+router.delete('/:orderId', checkAuth, (req, res) => {
 
     const id = req.params.orderId
 

@@ -1,6 +1,7 @@
 const express = require('express')
 const productModel = require('../model/product')
 const router = express.Router()
+const checkAuth = require('../middleware/check-auth')
 
 // total get product
 router.get('/', (req, res) => {
@@ -30,7 +31,7 @@ router.get('/', (req, res) => {
 })
 
 // detail get product
-router.get('/:productId', (req, res) => {
+router.get('/:productId', checkAuth, (req, res) => {
 
     const id = req.params.productId
 
@@ -60,7 +61,7 @@ router.get('/:productId', (req, res) => {
 })
 
 // register product
-router.post('/', (req, res) => {
+router.post('/', checkAuth, (req, res) => {
 
     const newProduct = new productModel(
         {
@@ -90,7 +91,7 @@ router.post('/', (req, res) => {
 })
 
 // update product
-router.patch('/:productId', (req, res) => {
+router.patch('/:productId', checkAuth, (req, res) => {
 
     const id = req.params.productId
 
@@ -137,7 +138,7 @@ router.delete('/', (req, res) => {
 })
 
 // detail delete product
-router.delete('/:productId', (req, res) => {
+router.delete('/:productId', checkAuth, (req, res) => {
 
     const id = req.params.productId
 
