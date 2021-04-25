@@ -3,8 +3,12 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
 exports.users_signup_user = (req, res) => {
+
+    const {name, email, password} = req.body
+
+
     // password 암호화 => 이메일 유무 check => user model 생성 => save
-    bcrypt.hash(req.body.password, 10, (err, hash) => {
+    bcrypt.hash(password, 10, (err, hash) => {
         if(err){
             return res.status(500).json({
                 msg : err.message
@@ -12,7 +16,7 @@ exports.users_signup_user = (req, res) => {
         }
         else{
             userModel
-                .findOne({email : req.body.userEmail})
+                .findOne({email})
                 .then(user => {
                     if(user){
                         return res.json({
@@ -22,8 +26,8 @@ exports.users_signup_user = (req, res) => {
                     else{
                         const newUser = new userModel(
                             {
-                                name : req.body.userName,
-                                email : req.body.userEmail,
+                                name,
+                                email,
                                 password : hash
                             }
                         )
@@ -60,9 +64,11 @@ exports.users_signup_user = (req, res) => {
 };
 
 exports.users_login_user = (req, res) => {
+
+    const {email, password} = req.body
     // email 유무 check => password 매칭 => 로그인 성공시 token 반환
     userModel
-        .findOne({email : req.body.userEmail})
+        .findOne({email})
         .then(user => {
             if(!user){
                 return res.status(404).json({
@@ -70,7 +76,7 @@ exports.users_login_user = (req, res) => {
                 })
             }
             else{
-                bcrypt.compare(req.body.password, user.password, (err, isMatch) => {
+                bcrypt.compare(password, user.password, (err, isMatch) => {
                     if(err || isMatch === false){
                         return res.status(408).json({
                             msg : "password not match"
