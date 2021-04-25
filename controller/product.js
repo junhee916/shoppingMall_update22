@@ -58,12 +58,13 @@ exports.products_get_product = (req, res) => {
 
 exports.products_post_product = (req, res) => {
 
-    const {name, price} = req.body
+    const {name, price } = req.body
 
     const newProduct = new productModel(
         {
             name,
-            price
+            price,
+            productImage : req.file.path
         }
     )
 
@@ -76,6 +77,7 @@ exports.products_post_product = (req, res) => {
                     id : product._id,
                     name : product.name,
                     price : product.price,
+                    productImage : product.productImage,
                     data : product.createdAt
                 }
             })
